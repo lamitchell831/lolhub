@@ -634,7 +634,10 @@ async function fetchGiphy(category) {
   };
   const query = tenorMap[category] || 'funny';
   try {
-    const resp = await fetch(`https://tenor.googleapis.com/v2/search?q=${encodeURIComponent(query)}&key=${tenorKey}&limit=25&media_filter=mp4&contentfilter=medium`);
+    const tenorBaseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'https://tenor.googleapis.com'
+      : 'https://corsproxy.io/?' + encodeURIComponent('https://tenor.googleapis.com');
+    const resp = await fetch(`${tenorBaseUrl}/v2/search?q=${encodeURIComponent(query)}&key=${tenorKey}&limit=25&media_filter=mp4&contentfilter=medium`);
     if (resp.ok) {
       const data = await resp.json();
       if (data.results && data.results.length > 0) {
@@ -659,7 +662,11 @@ async function fetchGiphy(category) {
 
   // Fallback to Giphy (beta key may be deprecated)
   try {
-    const resp = await fetch(`https://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFHm4C&limit=25&rating=pg-13`);
+    // Giphy also needs CORS proxy on GitHub Pages
+    const giphyBaseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'https://api.giphy.com'
+      : 'https://corsproxy.io/?' + encodeURIComponent('https://api.giphy.com');
+    const resp = await fetch(`${giphyBaseUrl}/v1/gifs/trending?api_key=dc6zaTOxFHm4C&limit=25&rating=pg-13`);
     if (!resp.ok) return [];
     const data = await resp.json();
     if (!data.data || data.data.length === 0) return [];
@@ -684,7 +691,11 @@ async function fetchGiphy(category) {
 
 async function fetchReddit(subreddit, category) {
   try {
-    const resp = await fetch(`https://www.reddit.com/r/${subreddit}/hot.json?limit=30`, {
+    // Reddit API blocks CORS from browsers — use proxy for GitHub Pages
+    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'https://www.reddit.com'
+      : 'https://corsproxy.io/?' + encodeURIComponent('https://www.reddit.com');
+    const resp = await fetch(`${baseUrl}/r/${subreddit}/hot.json?limit=30`, {
       headers: { 'User-Agent': 'LOLhub/1.0' }
     });
     if (!resp.ok) return [];
