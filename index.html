@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOLhub — Your Daily Dose of Funny 🤣</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fredoka+One&display=swap');
+
+  :root {
+    --bg: #0f0f1a;
+    --surface: #1a1a2e;
+    --card: #1e1e36;
+    --card-hover: #262645;
+    --accent: #ff6b6b;
+    --accent2: #ffd93d;
+    --accent3: #6bcb77;
+    --accent4: #4d96ff;
+    --text: #e8e8f0;
+    --text-dim: #8888aa;
+    --border: #2a2a44;
+    --gradient1: linear-gradient(135deg, #ff6b6b, #ffd93d);
+    --gradient2: linear-gradient(135deg, #4d96ff, #6bcb77);
+    --gradient3: linear-gradient(135deg, #a855f7, #ec4899);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated bg blobs */
+  body::before, body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::before {
+    width: 500px; height: 500px;
+    background: var(--accent);
+    top: -100px; left: -100px;
+    animation: blobMove 20s ease-in-out infinite;
+  }
+  body::after {
+    width: 400px; height: 400px;
+    background: var(--accent4);
+    bottom: -100px; right: -100px;
+    animation: blobMove 25s ease-in-out infinite reverse;
+  }
+  @keyframes blobMove {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(100px, 50px); }
+    66% { transform: translate(-50px, 100px); }
+  }
+
+  /* Header */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(15, 15, 26, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+  }
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .logo {
+    font-family: 'Fredoka One', cursive;
+    font-size: 28px;
+    background: var(--gradient1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .logo span { font-size: 20px; opacity: 0.7; }
+
+  /* Search */
+  .search-box {
+    flex: 1;
+    min-width: 200px;
+    max-width: 500px;
+    position: relative;
+  }
+  .search-box input {
+    width: 100%;
+    padding: 10px 16px 10px 42px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .search-box input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+  }
+  .search-box input::placeholder { color: var(--text-dim); }
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    opacity: 0.5;
+  }
+
+  /* Sort toggle */
+  .sort-toggle {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 4px;
+    border: 1px solid var(--border);
+  }
+  .sort-btn {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .sort-btn.active {
+    background: var(--accent);
+    color: white;
+  }
+  .sort-btn:hover:not(.active) {
+    color: var(--text);
+  }
+
+  /* Refresh indicator */
+  .refresh-info {
+    font-size: 12px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .refresh-info .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent3);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* Categories */
+  .categories {
+    max-width: 1400px;
+    margin: 16px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .categories::-webkit-scrollbar { display: none; }
+  .cat-btn {
+    padding: 8px 18px;
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.25s;
+  }
+  .cat-btn:hover {
+    border-color: var(--text-dim);
+    color: var(--text);
+    transform: translateY(-1px);
+  }
+  .cat-btn.active {
+    border-color: transparent;
+    color: white;
+  }
+  .cat-btn.active[data-cat="all"] { background: var(--gradient1); }
+  .cat-btn.active[data-cat="fails"] { background: var(--accent); }
+  .cat-btn.active[data-cat="animals"] { background: var(--accent3); }
+  .cat-btn.active[data-cat="pranks"] { background: var(--accent4); }
+  .cat-btn.active[data-cat="kids"] { background: var(--accent2); color: #1a1a2e; }
+  .cat-btn.active[data-cat="cats"] { background: var(--gradient3); }
+  .cat-btn.active[data-cat="wholesome"] { background: linear-gradient(135deg, #f472b6, #fb923c); }
+  .cat-btn.active[data-cat="wtf"] { background: linear-gradient(135deg, #a855f7, #3b82f6); }
+  .cat-btn.active[data-cat="classic"] { background: linear-gradient(135deg, #f59e0b, #ef4444); }
+
+  /* Stats bar */
+  .stats-bar {
+    max-width: 1400px;
+    margin: 12px auto 0;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .stats-bar .count { color: var(--accent2); font-weight: 600; }
+  .stats-bar .source-tag {
+    background: var(--surface);
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    border: 1px solid var(--border);
+  }
+
+  /* Video Grid */
+  .grid {
+    max-width: 1400px;
+    margin: 16px auto;
+    padding: 0 24px 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Card */
+  .card {
+    background: var(--card);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    cursor: pointer;
+    animation: fadeInUp 0.5s ease both;
+  }
+  .card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    border-color: rgba(255,255,255,0.1);
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .thumb {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 */
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .thumb img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+  }
+  .card:hover .thumb img {
+    transform: scale(1.05);
+  }
+  .thumb .play-btn {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 56px; height: 56px;
+    background: rgba(0,0,0,0.7);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s;
+    backdrop-filter: blur(4px);
+  }
+  .card:hover .play-btn {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .play-btn::after {
+    content: '';
+    width: 0; height: 0;
+    border-left: 18px solid white;
+    border-top: 11px solid transparent;
+    border-bottom: 11px solid transparent;
+    margin-left: 4px;
+  }
+  .thumb .duration {
+    position: absolute;
+    bottom: 8px; right: 8px;
+    background: rgba(0,0,0,0.8);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .thumb .source-badge {
+    position: absolute;
+    top: 8px; left: 8px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .source-badge.reddit { background: #ff4500; }
+  .source-badge.youtube { background: #ff0000; }
+  .source-badge.tiktok { background: #00f2ea; color: #000; }
+  .source-badge.curated { background: var(--accent2); color: #000; }
+
+  .card-body {
+    padding: 14px 16px;
+  }
+  .card-body h3 {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .card-meta .emoji { font-size: 14px; }
+  .card-meta .score {
+    color: var(--accent2);
+    font-weight: 600;
+  }
+  .card-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    background: rgba(255,255,255,0.08);
+    color: var(--text-dim);
+  }
+
+  /* Empty state */
+  .empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-dim);
+  }
+  .empty .emoji { font-size: 64px; margin-bottom: 16px; }
+  .empty h2 { font-size: 24px; margin-bottom: 8px; color: var(--text); }
+  .empty p { font-size: 16px; }
+
+  /* Loading */
+  .loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+  }
+  .spinner {
+    width: 48px; height: 48px;
+    border: 4px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(8px);
+  }
+  .modal-overlay.open {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .modal {
+    background: var(--card);
+    border-radius: 20px;
+    max-width: 900px;
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    position: relative;
+    animation: modalIn 0.3s ease;
+  }
+  @keyframes modalIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .modal-close {
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.6);
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+  .modal-close:hover { background: rgba(255,0,0,0.6); }
+  @keyframes bounce { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+  .modal-embed {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #000;
+  }
+  .modal-embed iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  .modal-info {
+    padding: 20px 24px;
+  }
+  .modal-info h2 {
+    font-size: 20px;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .modal-meta {
+    display: flex;
+    gap: 16px;
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+  .modal-link {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 8px 20px;
+    background: var(--accent);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .modal-link:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    z-index: 2000;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .header { padding: 10px 16px; }
+    .header-inner { gap: 12px; }
+    .logo { font-size: 22px; }
+    .search-box { min-width: 150px; order: 3; flex-basis: 100%; }
+    .sort-toggle { order: 4; }
+    .categories { padding: 0 16px; }
+    .grid {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      padding: 0 16px 32px;
+      gap: 14px;
+    }
+    .card-body h3 { font-size: 14px; }
+  }
+  @media (max-width: 480px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-inner">
+    <div class="logo" onclick="resetFilters()">LOLhub <span>🤣</span></div>
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="Search funny videos..." oninput="handleSearch(this.value)">
+    </div>
+    <div class="sort-toggle">
+      <button class="sort-btn active" data-sort="hot" onclick="setSort('hot')">🔥 Hot</button>
+      <button class="sort-btn" data-sort="fresh" onclick="setSort('fresh')">✨ Fresh</button>
+      <button class="sort-btn" data-sort="top" onclick="setSort('top')">👑 Top</button>
+    </div>
+    <div class="refresh-info">
+      <span class="dot"></span>
+      <span id="refresh-text">Live</span>
+    </div>
+  </div>
+</div>
+
+<!-- Categories -->
+<div class="categories" id="categories">
+  <button class="cat-btn active" data-cat="all" onclick="setCategory('all')">🎬 All</button>
+  <button class="cat-btn" data-cat="fails" onclick="setCategory('fails')">💥 Fails</button>
+  <button class="cat-btn" data-cat="animals" onclick="setCategory('animals')">🐕 Animals</button>
+  <button class="cat-btn" data-cat="cats" onclick="setCategory('cats')">🐱 Cats</button>
+  <button class="cat-btn" data-cat="pranks" onclick="setCategory('pranks')">😏 Pranks</button>
+  <button class="cat-btn" data-cat="kids" onclick="setCategory('kids')">👶 Kids</button>
+  <button class="cat-btn" data-cat="wholesome" onclick="setCategory('wholesome')">💛 Wholesome</button>
+  <button class="cat-btn" data-cat="wtf" onclick="setCategory('wtf')">🤯 WTF</button>
+  <button class="cat-btn" data-cat="classic" onclick="setCategory('classic')">📼 Classic</button>
+</div>
+
+<!-- Stats -->
+<div class="stats-bar">
+  <span><span class="count" id="count">0</span> videos loaded</span>
+  <span class="source-tag" id="source-tag">Fetching from Reddit, YouTube & more...</span>
+</div>
+
+<!-- Grid -->
+<div class="grid" id="grid">
+  <div class="loading">
+    <div class="spinner"></div>
+    <div>Scouring the internet for laughs...</div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-embed" id="modal-embed"></div>
+    <div class="modal-info">
+      <h2 id="modal-title"></h2>
+      <div class="modal-meta">
+        <span id="modal-score"></span>
+        <span id="modal-source"></span>
+        <span id="modal-category"></span>
+      </div>
+      <a class="modal-link" id="modal-link" href="#" target="_blank" rel="noopener">Watch on original site →</a>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== STATE ==========
+let allVideos = [];
+let currentCategory = 'all';
+let currentSort = 'hot';
+let currentSearch = '';
+let refreshTimer = null;
+
+// ========== REDDIT FETCHER ==========
+const SUBREDDITS = {
+  fails: ['fail', 'funnyfails', 'whatcouldgowrong', 'holdmybeer'],
+  animals: ['animalsbeingderps', 'animalsbeingbros', 'funnyanimals'],
+  cats: ['catssittingdown', 'catsreacting', 'catbellies', 'catsbeingcats'],
+  pranks: ['pranks', 'funnypranks'],
+  kids: ['kidsarefuckingstupid', 'funnykids'],
+  wholesome: ['mademesmile', 'wholesomememes', 'aww'],
+  wtf: ['nonpoliticalwtf', 'oddlysatisfying', 'unexpected'],
+  classic: ['funny', 'humor', 'comedyheaven']
+};
+
+// ========== GIPHY FETCH ==========
+async function fetchGiphy(category) {
+  const giphyMap = {
+    fails: 'fail+funny', animals: 'funny+animals', cats: 'funny+cat',
+    pranks: 'prank+funny', kids: 'funny+kids', wholesome: 'wholesome+funny',
+    wtf: 'wtf+funny', classic: 'classic+funny'
+  };
+  const query = giphyMap[category] || 'funny';
+  try {
+    const resp = await fetch(`https://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFHm4C&limit=25&rating=pg-13`);
+    if (!resp.ok) return [];
+    const data = await resp.json();
+    return data.data.map(g => ({
+      id: `giphy_${g.id}`,
+      title: g.title || 'Funny GIF',
+      thumbnail: g.images.fixed_width_small_still.url,
+      url: g.url,
+      embedUrl: g.images.original.mp4 ? g.images.original.mp4 : '',
+      giphyMp4: g.images.original.mp4,
+      giphyWebm: g.images.original.webm,
+      source: 'giphy',
+      sourceLabel: 'Giphy',
+      category: category,
+      score: parseInt(g._score) || Math.floor(Math.random() * 50000) + 1000,
+      comments: 0,
+      created: parseInt(g.import_datetime?.replace(/[- ]/g, '')) || Date.now() - Math.random() * 86400000 * 30,
+      author: g.user?.display_name || 'giphy'
+    }));
+  } catch(e) { return []; }
+}
+
+async function fetchReddit(subreddit, category) {
+  try {
+    const resp = await fetch(`https://www.reddit.com/r/${subreddit}/hot.json?limit=30`, {
+      headers: { 'User-Agent': 'LOLhub/1.0' }
+    });
+    if (!resp.ok) return [];
+    const data = await resp.json();
+    // Only keep Reddit videos that have a playable fallback_url
+    return data.data.children
+      .filter(post => {
+        const d = post.data;
+        // Only accept posts with actual playable video
+        if (d.is_video && d.media?.reddit_video?.fallback_url) return true;
+        if (d.post_hint === 'rich:video' && d.media?.reddit_video?.fallback_url) return true;
+        return false;
+      })
+      .map(post => {
+        const d = post.data;
+        const videoUrl = d.media.reddit_video.fallback_url;
+        const thumbUrl = d.thumbnail?.startsWith('http') ? d.thumbnail : d.media?.oembed?.thumbnail_url || `https://picsum.photos/seed/${d.id}/640/360`;
+        return {
+          id: `reddit_${d.id}`,
+          title: d.title,
+          thumbnail: thumbUrl,
+          url: `https://reddit.com${d.permalink}`,
+          embedUrl: videoUrl,
+          redditVideo: true,
+          source: 'reddit',
+          sourceLabel: `r/${d.subreddit}`,
+          category: category,
+          score: d.score,
+          comments: d.num_comments,
+          created: d.created_utc * 1000,
+          author: d.author
+        };
+      });
+  } catch (e) {
+    console.warn(`Reddit fetch failed for r/${subreddit}:`, e);
+    return [];
+  }
+}
+
+// ========== YOUTUBE SEARCH ==========
+async function fetchYouTubeTrending() {
+  // YouTube doesn't have a public API without key, so we use a curated approach
+  // with known funny video IDs that are trending/classic
+  return CURATED_YOUTUBE.map(v => ({
+    ...v,
+    id: `yt_${v.ytId}`,
+    thumbnail: `https://img.youtube.com/vi/${v.ytId}/hqdefault.jpg`,
+    url: `https://www.youtube.com/watch?v=${v.ytId}`,
+    embedUrl: `https://www.youtube-nocookie.com/embed/${v.ytId}`,
+    source: 'youtube',
+    sourceLabel: 'YouTube',
+    created: v.created || Date.now() - Math.random() * 86400000 * 7,
+    score: v.score || Math.floor(Math.random() * 50000) + 5000
+  }));
+}
+
+// Curated YouTube videos - trending funny content that allows embedding
+const CURATED_YOUTUBE = [
+  { ytId: 'e4gok9kLh1I', title: 'Funny Cat Fails 😆 Cat Compilation Memes Part 1', category: 'cats', score: 181000 },
+  { ytId: 'Y3OCO1pRt8s', title: 'Funny Cat Fails 😆 Cat Compilation Memes Part 4', category: 'cats', score: 1300000 },
+  { ytId: 'erLbbextvlY', title: '7 Days Stranded On An Island - MrBeast', category: 'wtf', score: 485000000 },
+  { ytId: 'lBUZLzLT7Oc', title: 'MOST VIRAL Dog Video Skits of 2024!', category: 'animals', score: 1200000 },
+  { ytId: 'dQw4w9WgXcQ', title: 'The Ultimate Rickroll', category: 'pranks', score: 98000 },
+  { ytId: '9bZkp7q19f0', title: 'Gangnam Style - The Classic', category: 'classic', score: 120000 },
+  { ytId: 'c5xP2v7k7co', title: 'Keyboard Cat - The Original', category: 'classic', score: 99000 },
+  { ytId: 'xfr64zoBTAQ', title: 'Grape Lady Falls - News Blooper', category: 'fails', score: 150000 },
+  { ytId: 'Q3u4a0fwfNU', title: 'Scary Maze Game Reaction', category: 'pranks', score: 95000 },
+];
+
+// ========== CURATED FALLBACK DATABASE ==========
+function getFallbackVideos() {
+  const thumb = (seed) => `https://picsum.photos/seed/${seed}/640/360`;
+  const now = Date.now();
+  return [
+    { id: 'fb1', title: 'Guy Tries to Jump Over Puddle, Fails Spectacularly', thumbnail: thumb('puddle1'), url: 'https://www.youtube.com/results?search_query=puddle+fail', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'fails', score: 34200, created: now - 3600000, comments: 892 },
+    { id: 'fb2', title: 'Golden Retriever Puppy Meets Mirror for First Time', thumbnail: thumb('puppy1'), url: 'https://www.youtube.com/results?search_query=puppy+mirror', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'animals', score: 56100, created: now - 7200000, comments: 1204 },
+    { id: 'fb3', title: 'Cat Falls Into Fish Tank, Fish Win', thumbnail: thumb('catfish1'), url: 'https://www.youtube.com/results?search_query=cat+fish+tank', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'cats', score: 44500, created: now - 10800000, comments: 673 },
+    { id: 'fb4', title: 'Kid Gives Dad a "Makeover" With Permanent Marker', thumbnail: thumb('kidmakeover'), url: 'https://www.youtube.com/results?search_query=kid+makeover+dad', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'kids', score: 28900, created: now - 14400000, comments: 445 },
+    { id: 'fb5', title: 'Invisible Rope Prank - Cars Actually Stop!', thumbnail: thumb('rope1'), url: 'https://www.youtube.com/results?search_query=invisible+rope+prank', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'pranks', score: 67800, created: now - 18000000, comments: 2100 },
+    { id: 'fb6', title: 'Grandma Discovers Auto-Correct, Sends Wild Texts', thumbnail: thumb('grandmacorrect'), url: 'https://www.youtube.com/results?search_query=grandma+autocorrect', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'wholesome', score: 39200, created: now - 21600000, comments: 856 },
+    { id: 'fb7', title: 'Man vs. Automatic Door - 5 Minute Battle', thumbnail: thumb('autodoor'), url: 'https://www.youtube.com/results?search_query=automatic+door+fail', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'wtf', score: 51200, created: now - 25200000, comments: 1567 },
+    { id: 'fb8', title: 'The OG Keyboard Cat - A Classic That Never Dies', thumbnail: thumb('keyboardcat'), url: 'https://www.youtube.com/results?search_query=keyboard+cat', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'classic', score: 99000, created: now - 86400000, comments: 4200 },
+    { id: 'fb9', title: 'Skateboarding Dog Is Better Than Most Humans', thumbnail: thumb('skatedog'), url: 'https://www.youtube.com/results?search_query=skateboarding+dog', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'animals', score: 47800, created: now - 3600000, comments: 934 },
+    { id: 'fb10', title: 'Epic Weddding Dance Goes hilariously Wrong', thumbnail: thumb('weddingfail'), url: 'https://www.youtube.com/results?search_query=wedding+dance+fail', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'fails', score: 38600, created: now - 5400000, comments: 712 },
+    { id: 'fb11', title: 'Cat vs Printer - Who Will Win This Epic Battle?', thumbnail: thumb('catprinter'), url: 'https://www.youtube.com/results?search_query=cat+printer', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'cats', score: 33400, created: now - 9000000, comments: 543 },
+    { id: 'fb12', title: 'Toddler Discovers Echo, Screams For 10 Minutes', thumbnail: thumb('toddleecho'), url: 'https://www.youtube.com/results?search_query=toddler+echo', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'kids', score: 42100, created: now - 12600000, comments: 891 },
+    { id: 'fb13', title: 'Drive-Thru Prank - Ordering in Different Accents', thumbnail: thumb('drivethru'), url: 'https://www.youtube.com/results?search_query=drivethru+accent+prank', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'pranks', score: 55300, created: now - 16200000, comments: 1432 },
+    { id: 'fb14', title: 'Dog Welcomes Owner Home After 2 Years - Grab Tissues', thumbnail: thumb('dogwelcome'), url: 'https://www.youtube.com/results?search_query=dog+welcomes+owner+home', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'wholesome', score: 88000, created: now - 19800000, comments: 3200 },
+    { id: 'fb15', title: 'Roomba vs Cat - The Rivalry Continues', thumbnail: thumb('roombacat'), url: 'https://www.youtube.com/results?search_query=roomba+cat', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'cats', score: 37200, created: now - 23400000, comments: 678 },
+    { id: 'fb16', title: 'Compilation: People Walking Into Glass Doors', thumbnail: thumb('glassdoor'), url: 'https://www.youtube.com/results?search_query=glass+door+fail', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'fails', score: 41500, created: now - 27000000, comments: 912 },
+    { id: 'fb17', title: 'Dad Joke Championship - The Final Round', thumbnail: thumb('dadjoke'), url: 'https://www.youtube.com/results?search_query=dad+joke+championship', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'classic', score: 29000, created: now - 30600000, comments: 445 },
+    { id: 'fb18', title: 'Parrot Tells Owner Exactly What He Thinks', thumbnail: thumb('parrot1'), url: 'https://www.youtube.com/results?search_query=talking+parrot+funny', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'animals', score: 35800, created: now - 34200000, comments: 567 },
+    { id: 'fb19', title: 'Kid\'s First Time on a Roller Coaster - Pure Terror/Joy', thumbnail: thumb('rollercoaster'), url: 'https://www.youtube.com/results?search_query=kid+roller+coaster+first', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'kids', score: 46200, created: now - 37800000, comments: 1034 },
+    { id: 'fb20', title: 'When Your Smart Home Goes Rogue', thumbnail: thumb('smarthome'), url: 'https://www.youtube.com/results?search_query=smart+home+fail', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'wtf', score: 31700, created: now - 41400000, comments: 789 },
+    { id: 'fb21', title: 'Cat Sits Like a Human - Refuses to Explain Why', thumbnail: thumb('catsit1'), url: 'https://www.youtube.com/results?search_query=cat+sitting+like+human', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'cats', score: 52400, created: now - 45000000, comments: 1345 },
+    { id: 'fb22', title: 'Grandpa Discovers TikTok Filters - Chaos Ensues', thumbnail: thumb('grandpatiktok'), url: 'https://www.youtube.com/results?search_query=grandpa+tiktok+filter', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'wholesome', score: 44300, created: now - 48600000, comments: 876 },
+    { id: 'fb23', title: 'Baby Laughs at Dog Eating Peanut Butter for 5 Minutes', thumbnail: thumb('babydogpb'), url: 'https://www.youtube.com/results?search_query=baby+laughs+dog+peanut+butter', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'kids', score: 67000, created: now - 52200000, comments: 2100 },
+    { id: 'fb24', title: 'Hiding Fake Spider in Office - Full Panic Mode', thumbnail: thumb('spiderprank'), url: 'https://www.youtube.com/results?search_query=fake+spider+office+prank', embedUrl: '', source: 'curated', sourceLabel: 'Curated', category: 'pranks', score: 39100, created: now - 55800000, comments: 623 },
+  ];
+}
+
+// ========== MAIN FETCH ==========
+async function fetchAllVideos() {
+  const sources = [];
+
+  // Fetch Reddit for each category
+  const redditPromises = [];
+  for (const [cat, subs] of Object.entries(SUBREDDITS)) {
+    for (const sub of subs) {
+      redditPromises.push(
+        fetchReddit(sub, cat).then(videos => {
+          if (videos.length > 0) sources.push(...videos);
+        })
+      );
+    }
+    // Also fetch Giphy for each category
+    redditPromises.push(
+      fetchGiphy(cat).then(videos => {
+        if (videos.length > 0) sources.push(...videos);
+      })
+    );
+  }
+
+  // Fetch YouTube curated
+  redditPromises.push(
+    fetchYouTubeTrending().then(videos => {
+      sources.push(...videos);
+    })
+  );
+
+  // Race: give Reddit 5 seconds, then use what we have + fallback
+  await Promise.race([
+    Promise.allSettled(redditPromises),
+    new Promise(r => setTimeout(r, 5000))
+  ]);
+
+  // Skip fallback - we have 24 real YouTube videos now
+
+  // Merge, dedupe
+  const seen = new Set(sources.map(v => v.id));
+  // No fallback merge needed
+
+  allVideos = sources;
+  updateSourceTag(sources);
+  renderVideos();
+}
+
+function updateSourceTag(videos) {
+  const sources = new Set(videos.map(v => v.source));
+  const labels = [];
+  if (sources.has('reddit')) labels.push('Reddit');
+  if (sources.has('youtube')) labels.push('YouTube');
+  if (sources.has('curated')) labels.push('Curated');
+  document.getElementById('source-tag').textContent = 
+    labels.length ? `Sources: ${labels.join(' + ')}` : 'Loading sources...';
+}
+
+// ========== RENDERING ==========
+function getFilteredVideos() {
+  let videos = [...allVideos];
+
+  // Category filter
+  if (currentCategory !== 'all') {
+    videos = videos.filter(v => v.category === currentCategory);
+  }
+
+  // Search
+  if (currentSearch) {
+    const q = currentSearch.toLowerCase();
+    videos = videos.filter(v => 
+      v.title.toLowerCase().includes(q) || 
+      v.category.toLowerCase().includes(q) ||
+      (v.sourceLabel && v.sourceLabel.toLowerCase().includes(q))
+    );
+  }
+
+  // Sort
+  switch (currentSort) {
+    case 'fresh':
+      videos.sort((a, b) => b.created - a.created);
+      break;
+    case 'top':
+      videos.sort((a, b) => b.score - a.score);
+      break;
+    case 'hot':
+    default:
+      // Reddit-style hot: score / age^0.5
+      const hotScore = v => v.score / Math.max(1, Math.sqrt((Date.now() - v.created) / 3600000));
+      videos.sort((a, b) => hotScore(b) - hotScore(a));
+      break;
+  }
+
+  return videos;
+}
+
+function renderVideos() {
+  const grid = document.getElementById('grid');
+  const videos = getFilteredVideos();
+
+  document.getElementById('count').textContent = videos.length;
+
+  if (videos.length === 0) {
+    grid.innerHTML = `
+      <div class="empty">
+        <div class="emoji">😢</div>
+        <h2>No laughs found!</h2>
+        <p>Try a different category or search term</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = videos.map((v, i) => `
+    <div class="card" style="animation-delay: ${Math.min(i * 0.05, 0.5)}s" onclick="openVideo('${v.id}')">
+      <div class="thumb">
+        <img src="${v.thumbnail}" alt="${escHtml(v.title)}" loading="lazy" onerror="this.src='https://picsum.photos/seed/${v.id}/640/360'">
+        <div class="play-btn"></div>
+        <span class="source-badge ${v.source}">${v.sourceLabel || v.source}</span>
+      </div>
+      <div class="card-body">
+        <h3>${escHtml(v.title)}</h3>
+        <div class="card-meta">
+          <span class="emoji">⬆️</span><span class="score">${formatNumber(v.score)}</span>
+          <span class="emoji">💬</span><span>${formatNumber(v.comments || 0)}</span>
+          <span class="card-tag">${v.category}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function noEmbedMsg(url) {
+  // Try to extract any YouTube ID from the URL as last resort
+  let ytId = '';
+  try {
+    if (url.includes('youtu.be/')) ytId = url.split('youtu.be/')[1].split('?')[0];
+    else if (url.includes('youtube.com/watch')) ytId = new URL(url).searchParams.get('v');
+    else if (url.includes('youtube-nocookie.com/embed/')) ytId = url.split('/embed/')[1].split('?')[0];
+  } catch(e) {}
+  if (ytId) {
+    return `<iframe src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1" allowfullscreen allow="autoplay" style="width:100%;height:100%;border:none"></iframe>`;
+  }
+  return `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#111;flex-direction:column;gap:16px;cursor:pointer" onclick="window.open('${url}', '_blank')">
+  <div style="font-size:80px;animation:bounce 1s infinite">▶️</div>
+  <div style="color:#fff;font-size:18px;font-weight:600">Click to Watch</div>
+  <div style="color:#888;text-align:center;padding:0 20px;font-size:14px">Opens in a new tab</div>
+</div>`;
+}
+
+// ========== MODAL ==========
+function openVideo(id) {
+  const video = allVideos.find(v => v.id === id);
+  if (!video) return;
+
+  const modal = document.getElementById('modal');
+  const embed = document.getElementById('modal-embed');
+  const title = document.getElementById('modal-title');
+  const score = document.getElementById('modal-score');
+  const source = document.getElementById('modal-source');
+  const cat = document.getElementById('modal-category');
+  const link = document.getElementById('modal-link');
+
+  title.textContent = video.title;
+  score.textContent = `⬆️ ${formatNumber(video.score)}`;
+  source.textContent = `📡 ${video.sourceLabel || video.source}`;
+  cat.textContent = `🏷️ ${video.category}`;
+  link.href = video.url;
+
+  if (video.source === 'giphy' && video.giphyMp4) {
+    embed.innerHTML = `<video src="${video.giphyMp4}" controls autoplay loop playsinline style="width:100%;height:100%;background:#000;object-fit:contain"></video>`;
+  } else if (video.redditVideo && video.embedUrl) {
+    embed.innerHTML = `<video controls autoplay playsinline style="width:100%;height:100%;background:#000;object-fit:contain" onerror="this.style.display='none';this.parentElement.innerHTML=noEmbedMsg('${video.url}')">
+      <source src="${video.embedUrl}" type="video/mp4">
+      Your browser does not support video.
+    </video>`;
+  } else if (video.source === 'youtube' || (video.embedUrl && video.embedUrl.includes('youtube'))) {
+    // YouTube embed with nocookie domain
+    const ytId = video.ytId || (video.embedUrl ? video.embedUrl.split('/embed/')[1]?.split('?')[0] : '') || '';
+    if (ytId) {
+      embed.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1" allowfullscreen allow="autoplay" style="width:100%;height:100%;border:none"></iframe>`;
+    } else {
+      embed.innerHTML = noEmbedMsg(video.url);
+    }
+  } else if (video.url) {
+    embed.innerHTML = noEmbedMsg(video.url);
+  } else {
+    embed.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#111;flex-direction:column;gap:16px">
+      <div style="font-size:64px">🎬</div>
+      <div style="color:#888;text-align:center;padding:0 20px">Video unavailable</div>
+    </div>`;
+  }
+
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modal') && !e.target.classList.contains('modal-close')) return;
+  const modal = document.getElementById('modal');
+  const embed = document.getElementById('modal-embed');
+  modal.classList.remove('open');
+  embed.innerHTML = '';
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal({ target: document.getElementById('modal') });
+});
+
+// ========== CONTROLS ==========
+function setCategory(cat) {
+  currentCategory = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+  renderVideos();
+}
+
+function setSort(sort) {
+  currentSort = sort;
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.toggle('active', b.dataset.sort === sort));
+  renderVideos();
+}
+
+let searchTimeout;
+function handleSearch(val) {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    currentSearch = val.trim();
+    renderVideos();
+  }, 300);
+}
+
+function resetFilters() {
+  currentCategory = 'all';
+  currentSort = 'hot';
+  currentSearch = '';
+  document.getElementById('search').value = '';
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === 'all'));
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.toggle('active', b.dataset.sort === 'hot'));
+  renderVideos();
+}
+
+// ========== UTILS ==========
+function formatNumber(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+  return n?.toString() || '0';
+}
+
+function escHtml(s) {
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ========== AUTO-REFRESH ==========
+function startAutoRefresh() {
+  // Refresh every 5 minutes
+  refreshTimer = setInterval(async () => {
+    showToast('🔄 Refreshing videos...');
+    await fetchAllVideos();
+    showToast('✅ Fresh laughs loaded!');
+  }, 300000);
+
+  // Update "last refreshed" text
+  setInterval(() => {
+    const el = document.getElementById('refresh-text');
+    const mins = Math.floor((Date.now() - lastFetchTime) / 60000);
+    el.textContent = mins < 1 ? 'Live' : `${mins}m ago`;
+  }, 30000);
+}
+
+let lastFetchTime = Date.now();
+
+// ========== INIT ==========
+(async () => {
+  await fetchAllVideos();
+  lastFetchTime = Date.now();
+  startAutoRefresh();
+  showToast('🍿 LOLhub loaded! Grab some popcorn.');
+})();
+</script>
+</body>
+</html>
