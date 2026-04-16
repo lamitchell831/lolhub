@@ -614,27 +614,55 @@ let refreshTimer = null;
 // ========== REDDIT FETCHER ==========
 const SUBREDDITS = {
   fails: ['fail', 'funnyfails', 'whatcouldgowrong', 'holdmybeer'],
-  animals: ['animalsbeingderps', 'animalsbeingbros', 'funnyanimals'],
-  cats: ['catssittingdown', 'catsreacting', 'catbellies', 'catsbeingcats'],
+  animals: ['animalsbeingderps', 'animalsbeingbros', 'funnyanimals', 'aww'],
+  cats: ['catssittingdown', 'catsreacting', 'catbellies', 'catsbeingcats', 'startledcats'],
   pranks: ['pranks', 'funnypranks'],
   kids: ['kidsarefuckingstupid', 'funnykids'],
   wholesome: ['mademesmile', 'wholesomememes', 'aww'],
   wtf: ['nonpoliticalwtf', 'oddlysatisfying', 'unexpected'],
-  classic: ['funny', 'humor', 'comedyheaven']
+  classic: ['funny', 'humor', 'comedyheaven', 'gifs', 'reactiongifs']
 };
 
-// ========== GIPHY FETCH ==========
+// ========== GIPHY + TENOR FETCH ==========
 async function fetchGiphy(category) {
-  const giphyMap = {
+  // Try Tenor first (Google-owned, free API, CORS-friendly)
+  const tenorKey = 'AIzaSyAyimkuYQYF_F-4i5HSmX-8MxfkU7MIL1U'; // Tenor public key
+  const tenorMap = {
     fails: 'fail+funny', animals: 'funny+animals', cats: 'funny+cat',
     pranks: 'prank+funny', kids: 'funny+kids', wholesome: 'wholesome+funny',
     wtf: 'wtf+funny', classic: 'classic+funny'
   };
-  const query = giphyMap[category] || 'funny';
+  const query = tenorMap[category] || 'funny';
+  try {
+    const resp = await fetch(`https://tenor.googleapis.com/v2/search?q=${encodeURIComponent(query)}&key=${tenorKey}&limit=25&media_filter=mp4&contentfilter=medium`);
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data.results && data.results.length > 0) {
+        return data.results.map(g => ({
+          id: `tenor_${g.id}`,
+          title: g.title || g.content_description || 'Funny GIF',
+          thumbnail: g.media_formats?.mp4?.preview || g.media_formats?.tinymp4?.preview || '',
+          url: g.url || `https://tenor.com/view/${g.id}`,
+          embedUrl: g.media_formats?.mp4?.url || '',
+          giphyMp4: g.media_formats?.mp4?.url || '',
+          source: 'giphy',
+          sourceLabel: 'Tenor',
+          category: category,
+          score: Math.floor(Math.random() * 50000) + 1000,
+          comments: 0,
+          created: Date.now() - Math.random() * 86400000 * 30,
+          author: 'tenor'
+        }));
+      }
+    }
+  } catch(e) { console.warn('Tenor fetch failed:', e); }
+
+  // Fallback to Giphy (beta key may be deprecated)
   try {
     const resp = await fetch(`https://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFHm4C&limit=25&rating=pg-13`);
     if (!resp.ok) return [];
     const data = await resp.json();
+    if (!data.data || data.data.length === 0) return [];
     return data.data.map(g => ({
       id: `giphy_${g.id}`,
       title: g.title || 'Funny GIF',
@@ -661,18 +689,22 @@ async function fetchReddit(subreddit, category) {
     });
     if (!resp.ok) return [];
     const data = await resp.json();
-    // Only keep Reddit videos that have a playable fallback_url
+    // Accept Reddit videos AND playable GIFs (i.redd.it .gifv/.mp4)
     return data.data.children
       .filter(post => {
         const d = post.data;
-        // Only accept posts with actual playable video
+        // Reddit-hosted video with fallback_url
         if (d.is_video && d.media?.reddit_video?.fallback_url) return true;
         if (d.post_hint === 'rich:video' && d.media?.reddit_video?.fallback_url) return true;
+        // Reddit-hosted GIF (i.redd.it .gifv/.mp4/.gif) — these are CORS-friendly
+        if (d.url && d.url.match(/i\.redd\.it\/.*\.(gifv|mp4|gif)$/)) return true;
+        if (d.post_hint === 'image' && d.url && d.url.includes('i.redd.it') && d.url.endsWith('.gifv')) return true;
         return false;
       })
       .map(post => {
         const d = post.data;
-        const videoUrl = d.media.reddit_video.fallback_url;
+        const isGifv = d.url && d.url.match(/i\.redd\.it\/.*\.(gifv|mp4|gif)$/);
+        const videoUrl = isGifv ? d.url.replace(/\.gifv$/, '.mp4').replace(/\.gif$/, '.mp4') : d.media.reddit_video.fallback_url;
         const thumbUrl = d.thumbnail?.startsWith('http') ? d.thumbnail : d.media?.oembed?.thumbnail_url || `https://picsum.photos/seed/${d.id}/640/360`;
         return {
           id: `reddit_${d.id}`,
@@ -681,6 +713,7 @@ async function fetchReddit(subreddit, category) {
           url: `https://reddit.com${d.permalink}`,
           embedUrl: videoUrl,
           redditVideo: true,
+          redditGifv: !!isGifv,
           source: 'reddit',
           sourceLabel: `r/${d.subreddit}`,
           category: category,
@@ -927,10 +960,23 @@ function openVideo(id) {
   if (video.source === 'giphy' && video.giphyMp4) {
     embed.innerHTML = `<video src="${video.giphyMp4}" controls autoplay loop playsinline style="width:100%;height:100%;background:#000;object-fit:contain"></video>`;
   } else if (video.redditVideo && video.embedUrl) {
-    embed.innerHTML = `<video controls autoplay playsinline style="width:100%;height:100%;background:#000;object-fit:contain" onerror="this.style.display='none';this.parentElement.innerHTML=noEmbedMsg('${video.url}')">
-      <source src="${video.embedUrl}" type="video/mp4">
-      Your browser does not support video.
-    </video>`;
+    // Reddit GIFv (i.redd.it) plays directly; v.redd.it may be CORS-blocked
+    const redditUrl = video.url;
+    if (video.redditGifv) {
+      embed.innerHTML = `<video src="${video.embedUrl}" controls autoplay loop playsinline style="width:100%;height:100%;background:#000;object-fit:contain"></video>`;
+    } else {
+      embed.innerHTML = `<div style="width:100%;height:100%;position:relative;background:#000">
+        <video id="reddit-vid" controls autoplay playsinline style="width:100%;height:100%;object-fit:contain"
+          onerror="this.style.display='none';document.getElementById('reddit-fallback').style.display='flex'">
+          <source src="${video.embedUrl}" type="video/mp4">
+        </video>
+        <div id="reddit-fallback" style="display:none;width:100%;height:100%;flex-direction:column;align-items:center;justify-content:center;gap:16px;position:absolute;top:0;left:0">
+          <div style="font-size:64px">🤖</div>
+          <div style="color:#aaa;text-align:center;padding:0 20px">Reddit blocked inline playback (CORS)</div>
+          <a href="${redditUrl}" target="_blank" rel="noopener" style="color:#ff6b6b;font-size:16px;text-decoration:underline">Watch on Reddit →</a>
+        </div>
+      </div>`;
+    }
   } else if (video.source === 'youtube' || (video.embedUrl && video.embedUrl.includes('youtube'))) {
     // YouTube embed with nocookie domain
     const ytId = video.ytId || (video.embedUrl ? video.embedUrl.split('/embed/')[1]?.split('?')[0] : '') || '';
